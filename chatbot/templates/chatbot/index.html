@@ -1,0 +1,138 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My AI Chatbot</title>
+    <link rel="stylesheet" href="{% static 'chatbot/style.css' %}">
+</head>
+<body>
+
+    <div class="chat-container">
+
+        <!-- Header -->
+        <header class="chat-header">
+            <h1>My AI Chatbot</h1>
+            <p>Your AI assistant, powered by Groq</p>
+
+            <form method="POST" class="new-chat-form">
+                {% csrf_token %}
+                <button type="submit"
+                        name="action"
+                        value="new_chat"
+                        class="new-chat-button">
+                    + New Chat
+                </button>
+            </form>
+        </header>
+
+        <!-- Notifications -->
+        {% if notifications %}
+            <div class="notifications">
+                {% for message in notifications %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Chat Messages -->
+        <main class="chat-box" id="chat-box">
+
+            {% for item in chat_messages %}
+
+                {% if item.role == "user" %}
+                    <div class="message user-message">
+                        <div class="message-label">You</div>
+                        <div class="message-content">
+                            {{ item.content }}
+                        </div>
+                    </div>
+
+                {% elif item.role == "assistant" %}
+                    <div class="message ai-message">
+                        <div class="message-label">AI Assistant</div>
+                        <div class="message-content">
+                            {{ item.content }}
+                        </div>
+                    </div>
+                {% endif %}
+
+            {% empty %}
+                <div class="welcome-message">
+                    <h2>How can I help you?</h2>
+                    <p>Ask me anything to get started.</p>
+                </div>
+            {% endfor %}
+
+        </main>
+
+        <!-- Chat Input Area -->
+        <div class="chat-input-area">
+
+            <!-- Plus Button and PDF Upload Menu -->
+            <details class="upload-menu">
+
+                <summary class="plus-button">+</summary>
+
+                <div class="upload-popup">
+
+                    <form method="POST"
+                          action="{% url 'upload_pdf' %}"
+                          enctype="multipart/form-data">
+
+                        {% csrf_token %}
+
+                        <label for="pdf-file">
+                            Choose PDF
+                        </label>
+
+                        <input type="file"
+                               id="pdf-file"
+                               name="pdf_file"
+                               accept=".pdf,application/pdf"
+                               required>
+
+                        <button type="submit">
+                            Upload PDF
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </details>
+
+            <!-- Message Form -->
+            <form class="chat-form" method="POST">
+
+                {% csrf_token %}
+
+                <input type="text"
+                       name="message"
+                       placeholder="Message your AI assistant..."
+                       autocomplete="off"
+                       required>
+
+                <button type="submit">Send</button>
+
+            </form>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="chat-footer">
+            AI can make mistakes. Check important information.
+        </footer>
+
+    </div>
+
+    <!-- Scroll Chat to Bottom -->
+    <script>
+        const chatBox = document.getElementById("chat-box");
+        chatBox.scrollTop = chatBox.scrollHeight;
+    </script>
+
+</body>
+</html>

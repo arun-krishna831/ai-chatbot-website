@@ -1,0 +1,30 @@
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+venv/
+env/
+
+# Environment variables and API keys
+.env
+.env.*
+
+# Django
+db.sqlite3
+*.log
+
+# Uploaded PDF files
+media/
+
+# ChromaDB vector database
+chroma_db/
+
+# IDE
+.vscode/
+.idea/
+
+# Operating system
+.DS_Store
+Thumbs.db
